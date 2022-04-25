@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rails Remix Demo</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+  </head>
+
+  <body>
+    <nav>
+      <%= link_to "Todos", root_path %> |
+      <%= link_to "About", about_path %>
+    </nav>
+    <%= yield %>
+  </body>
+</html>

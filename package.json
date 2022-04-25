@@ -1,0 +1,106 @@
+{
+  "name": "rails-remix-demo",
+  "private": true,
+  "description": "",
+  "license": "MIT",
+  "sideEffects": false,
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development run-p dev:*",
+    "dev:start": "remix dev",
+    "dev:css": "tailwindcss -o ./app/frontend/styles/tailwind.css --watch",
+    "dev:rails": "bin/rails s -p 3001",
+    "build": "cross-env NODE_ENV=production run-s build:*",
+    "build:clean": "del .cache build public/build app/frontend/styles",
+    "build:css": "tailwindcss -o ./app/frontend/styles/tailwind.css",
+    "build:remix": "remix build",
+    "lint": "run-s lint:*",
+    "lint:types": "tsc",
+    "lint:js": "eslint . --ext .ts,.tsx",
+    "test": "jest",
+    "size": "run-s build size-limit",
+    "size-limit": "size-limit",
+    "start": "remix-serve ./build",
+    "postinstall": "remix setup node"
+  },
+  "prettier": {
+    "singleQuote": true
+  },
+  "eslintConfig": {
+    "settings": {
+      "jest": {
+        "version": 27
+      }
+    },
+    "extends": [
+      "@remix-run/eslint-config",
+      "@remix-run/eslint-config/node",
+      "@remix-run/eslint-config/jest",
+      "prettier"
+    ],
+    "rules": {
+      "@typescript-eslint/no-redeclare": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "tailwind.config.js",
+          "remix.config.js",
+          "jest.config.js"
+        ],
+        "env": {
+          "node": true
+        }
+      }
+    ]
+  },
+  "dependencies": {
+    "@heroicons/react": "^1.0.6",
+    "@reach/tooltip": "^0.16.2",
+    "@remix-run/node": "^1.4.1",
+    "@remix-run/react": "^1.4.1",
+    "@remix-run/serve": "^1.4.1",
+    "clsx": "^1.1.1",
+    "is-hotkey": "^0.2.0",
+    "isbot": "^3.4.5",
+    "luxon": "^2.3.1",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-hotkeys-hook": "^3.4.4",
+    "remix": "^1.4.1",
+    "remix-utils": "^3.0.0",
+    "tiny-invariant": "^1.2.0",
+    "ts-node": "^10.7.0",
+    "zod": "^3.14.4"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.4.1",
+    "@remix-run/eslint-config": "^1.4.1",
+    "@size-limit/preset-app": "^7.0.8",
+    "@tailwindcss/forms": "^0.5.0",
+    "@types/is-hotkey": "^0.1.7",
+    "@types/jest": "^27.4.1",
+    "@types/luxon": "^2.3.1",
+    "@types/react": "^18.0.4",
+    "@types/react-dom": "^18.0.0",
+    "cross-env": "^7.0.3",
+    "crypto-random-string": "^4.0.0",
+    "del-cli": "^4.0.1",
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^27.5.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.6.2",
+    "size-limit": "^7.0.8",
+    "tailwindcss": "^3.0.24",
+    "ts-jest": "^27.1.4",
+    "typescript": "^4.6.3"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "size-limit": [
+    {
+      "path": "public/build/**/*.js"
+    }
+  ]
+}
