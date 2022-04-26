@@ -14,7 +14,7 @@ export async function proxy(request: Request, port = 3001) {
     redirect: 'manual',
   };
   const method = request.method.toLowerCase();
-  if (!['get', 'head'].includes(method)) {
+  if (!['get', 'head', 'delete'].includes(method)) {
     init.body = await request.blob();
   }
 
