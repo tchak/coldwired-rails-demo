@@ -22,15 +22,10 @@ export type RouteData =
 
 export type GetFetcher = (fetcherKey: string) => Fetcher<RouteData>;
 
-type Context = {
-  navigation?: Navigation;
-  revalidation?: RevalidationState;
-  fetchers: Map<string, Fetcher>;
-  snapshot?: string;
-};
+type Context = { state?: RouterState; snapshot?: string };
 
 export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router {
-  const context: Context = { fetchers: new Map() };
+  const context: Context = {};
 
   // HACK!!!
   const getFetcher: GetFetcher = (fetcherKey: string) =>
@@ -50,8 +45,7 @@ export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router
 
   router.subscribe((state) => {
     onRouterStateChange(state, context);
-    context.navigation = state.navigation;
-    context.revalidation = state.revalidation;
+    context.state = state;
   });
 
   const unsubscribe = [registerEventListeners(router), registerMutationObserver(router)];
@@ -66,18 +60,17 @@ export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router
 }
 
 function onRouterStateChange(state: RouterState, context: Context) {
-  if (context.navigation?.state != state.navigation.state) {
+  if (context.state?.navigation?.state != state.navigation.state) {
     navigationStateChange(state.navigation);
   }
 
-  if (context.revalidation != state.revalidation) {
+  if (context.state?.revalidation != state.revalidation) {
     revalidationStateChange(state.revalidation);
   }
 
   for (const [fetcherKey, fetcher] of state.fetchers) {
-    if (context.fetchers.get(fetcherKey)?.state != fetcher.state) {
+    if (context.state?.fetchers.get(fetcherKey)?.state != fetcher.state) {
       fetcherStateChange(fetcherKey, fetcher, getForm(fetcherKey));
-      context.fetchers.set(fetcherKey, fetcher);
     }
 
     if (fetcher.state == 'idle') {
@@ -92,12 +85,13 @@ function onRouterStateChange(state: RouterState, context: Context) {
   }
 
   if (state.initialized && state.navigation.state == 'idle') {
-    const { loaderData } = getRouteData(state);
-    switch (loaderData?.type) {
+    const { loaderData, actionData } = getRouteData(state);
+    const routeData = actionData ?? loaderData;
+    switch (routeData?.type) {
       case 'html':
-        if (loaderData.content != context.snapshot) {
-          renderPage(loaderData.content, state.navigation);
-          context.snapshot = loaderData.content;
+        if (routeData.content != context.snapshot) {
+          renderPage(routeData.content, state.navigation);
+          context.snapshot = routeData.content;
         }
         break;
       case 'turbo-stream':
@@ -127,8 +121,8 @@ function navigationStateChange(navigation: Navigation) {
   if (navigation.state != 'idle') {
     console.log(
       '[navigation state change]',
-      navigation.state,
-      `[${navigation.formMethod ?? 'get'}] ${navigation.location.pathname}`
+      `[${navigation.formMethod ?? 'get'}] ${navigation.location.pathname}`,
+      navigation.state
     );
   }
   document.documentElement.setAttribute('data-navigation-state', navigation.state);
@@ -148,8 +142,8 @@ function fetcherStateChange(fetcherKey: string, fetcher: Fetcher, form: HTMLForm
     console.log(
       '[fetcher state change]',
       fetcherKey,
-      fetcher.state,
-      `[${fetcher.formMethod}] ${fetcher.formAction}`
+      `[${fetcher.formMethod}] ${fetcher.formAction}`,
+      fetcher.state
     );
   }
   form.setAttribute('data-fetcher-state', fetcher.state);
