@@ -5,13 +5,26 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
+    <%= vite_client_tag %>
+    <%= vite_typescript_tag 'application' %>
+    <%= vite_stylesheet_tag 'application' %>
+
   </head>
 
   <body>
-    <nav>
-      <%= link_to "Todos", root_path %> |
-      <%= link_to "About", about_path %>
-    </nav>
-    <%= yield %>
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+      <% flash.each do |type, msg| %>
+        <div>
+          <%= msg %>
+        </div>
+      <% end %>
+
+      <nav>
+        <%= link_to "Todos", root_path %> |
+        <%= link_to "About", about_path %> |
+        <%= link_to "Not Found", '/yolo' %>
+      </nav>
+      <%= yield %>
+    </div>
   </body>
 </html>

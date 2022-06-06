@@ -1,5 +1,5 @@
 module.exports = {
-  content: ['./app/**/*.tsx', './app/**/*.ts'],
+  content: ['./app/helpers/**/*.rb', './app/frontent/**/*.ts', './app/views/**/*'],
   theme: { extend: {} },
   plugins: [require('@tailwindcss/forms')],
 };

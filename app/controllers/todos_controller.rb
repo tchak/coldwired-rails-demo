@@ -1,17 +1,14 @@
 class TodosController < ApplicationController
   def index
-    render json: {
-      todos: Todo.order(:created_at).all,
-      csrf: form_authenticity_token,
-      errors: flash[:errors]
-    }
+    @todo = Todo.new
+    @todos = Todo.order(:created_at).all
   end
 
   def create
     todo = Todo.new(create_params)
 
     if !todo.save
-      flash[:errors] = todo.errors.full_messages
+      flash.alert = todo.errors.full_messages
     end
 
     redirect_to root_path
@@ -21,17 +18,23 @@ class TodosController < ApplicationController
     todo = Todo.find(params[:id])
 
     if !todo.update(update_params)
-      flash[:errors] = todo.errors.full_messages
+      flash.alert = todo.errors.full_messages
     end
 
-    redirect_to root_path
+    head :no_content
   end
 
   def destroy
     todo = Todo.find(params[:id])
     todo.destroy
 
-    redirect_to root_path
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.remove(helpers.dom_id(todo, :item))
+      end
+
+      #format.html { redirect_to root_path }
+    end
   end
 
   def about

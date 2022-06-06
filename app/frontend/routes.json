@@ -1,0 +1,1 @@
+[{"id":"root","path":"/","handle":{"_loader":true,"_action":false}},{"id":"about","path":"/about","handle":{"_loader":true,"_action":false}},{"id":"todos","path":"/todos","handle":{"_loader":false,"_action":true}},{"id":"todo","path":"/todos/:id","handle":{"_loader":false,"_action":true}}]
