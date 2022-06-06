@@ -5,19 +5,31 @@ export const defaultMethod = 'get';
 const defaultEncType = 'application/x-www-form-urlencoded';
 
 export function isHtmlElement(object: any): object is HTMLElement {
-  return object != null && typeof object.tagName === 'string';
+  return object != null && typeof object.tagName == 'string';
 }
 
 export function isButtonElement(object: any): object is HTMLButtonElement {
-  return isHtmlElement(object) && object.tagName.toLowerCase() === 'button';
-}
-
-export function isFormElement(object: any): object is HTMLFormElement {
-  return isHtmlElement(object) && object.tagName.toLowerCase() === 'form';
+  return isHtmlElement(object) && object.tagName.toLowerCase() == 'button';
 }
 
 export function isInputElement(object: any): object is HTMLInputElement {
-  return isHtmlElement(object) && object.tagName.toLowerCase() === 'input';
+  return isHtmlElement(object) && object.tagName.toLowerCase() == 'input';
+}
+
+export function isCheckableInputElement(object: any): object is HTMLInputElement {
+  return isInputElement(object) && ['checkbox', 'radio'].includes(object.type);
+}
+
+export function isTextInputElement(object: any): object is HTMLInputElement | HTMLTextAreaElement {
+  return (
+    isInputElement(object) &&
+    /^(?:input|textarea)$/i.test(object.tagName) &&
+    !['button', 'checkbox', 'radio'].includes(object.type)
+  );
+}
+
+export function isFormElement(object: any): object is HTMLFormElement {
+  return isHtmlElement(object) && object.tagName.toLowerCase() == 'form';
 }
 
 type LimitedMouseEvent = Pick<MouseEvent, 'button' | 'metaKey' | 'altKey' | 'ctrlKey' | 'shiftKey'>;

@@ -67,11 +67,11 @@ function willFollowLink(event: MouseEvent, link: HTMLAnchorElement) {
 }
 
 function willSubmitOnInput(form: HTMLFormElement, input: HTMLInputElement) {
-  return willSubmitForm(form, input) && willSubmitOn(form, 'input');
+  return willSubmitForm(form, input) && willSubmitOn(form, input, 'input');
 }
 
 function willSubmitOnChange(form: HTMLFormElement, input: HTMLInputElement) {
-  return willSubmitForm(form, input) && willSubmitOn(form, 'change');
+  return willSubmitForm(form, input) && willSubmitOn(form, input, 'change');
 }
 
 function willFetch(form: HTMLFormElement) {
@@ -88,21 +88,25 @@ function isEnabled(element: HTMLElement) {
 
 function willSubmitForm(form: HTMLFormElement, submitter?: HTMLButtonElement | HTMLInputElement) {
   if (submitter) {
-    return isEnabled(submitter) || isEnabled(form);
+    return isEnabled(submitter) && isEnabled(form);
   }
   return isEnabled(form);
 }
 
-function willSubmitOn(target: HTMLFormElement, event: string): boolean {
+function willSubmitOn(
+  form: HTMLFormElement,
+  input: HTMLInputElement | HTMLTextAreaElement,
+  event: string
+): boolean {
   if (event == 'input') {
-    switch (target.type) {
+    switch (input.type) {
       case 'checkbox':
       case 'radio':
       case 'range':
         return false;
     }
   }
-  const submitOn = target.dataset.submitOn ?? '';
+  const submitOn = form.dataset.submitOn ?? '';
   const events = submitOn
     .toLowerCase()
     .split(' ')

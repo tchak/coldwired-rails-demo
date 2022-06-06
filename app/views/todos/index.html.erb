@@ -3,12 +3,17 @@
 <ul>
   <% @todos.each do |todo| %>
     <li class="flex items-center mb-2" id="<%= dom_id(todo, :item) %>">
-      <%= form_for todo, data: { fetcher: 'auto', submit_on: 'change' }, html: { class: 'inline' } do |form| %>
-        <label class="w-56">
-          <%= form.check_box :completed, class: "mr-2 focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded" %>
-          <span><%= todo.title %></span>
-        </label>
-      <% end %>
+      <div>
+        <%= form_for todo, data: { fetcher: 'auto', submit_on: 'change input' }, html: { class: 'inline' } do |form| %>
+          <label class="w-56">
+            <%= form.check_box :completed, class: "mr-2 focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded" %>
+            <span><%= todo.title %></span>
+          </label>
+          <div class="mt-1">
+            <%= form.text_field :title, class: 'shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md' %>
+          </div>
+        <% end %>
+      </div>
       <%= form_for todo, method: :delete, data: { fetcher: 'auto' }, html: { id: dom_id(todo, :delete), class: 'inline ml-2' } do |form| %>
         <%= form.submit "Delete", class: 'inline-flex items-center border shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75 border-transparent text-white bg-blue-600 text-xs rounded px-2.5 py-1.5 ml-2' %>
       <% end %>
