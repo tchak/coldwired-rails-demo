@@ -11,8 +11,8 @@ This is a first attempt to replace [turbo-drive](https://turbo.hotwired.dev/hand
  - intercepts `click` and `submit` events to navigate with client router
  - use [morphdom](https://github.com/patrick-steele-idem/morphdom) to render pages
  - bypass remix routing if `data-remix="false"` is set on links and forms
- - registers forms with `data-fetcher="key"` attributes as fetchers
- - dispath state change events on fetcher forms
+ - provide [stimulus](https://stimulus.hotwired.dev) controller to register fetchers (`data-controller="fetcher"`)
+ - provide [stimulus](https://stimulus.hotwired.dev) controller to submit forms on changes (`data-controller="submit-on-change"`)
  - in fetcher responses accepts [turbo-stream](https://turbo.hotwired.dev/handbook/streams) format and bypass revalidation in those cases
 
 To run the demo:
