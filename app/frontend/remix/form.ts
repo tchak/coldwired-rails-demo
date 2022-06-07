@@ -30,9 +30,6 @@ export function submitForm(
   const navigationOptions = { formMethod, formData, replace };
 
   if (fetcherKey) {
-    // HACK!!!
-    formData.set('__fetcher_key', fetcherKey);
-
     router.fetch(fetcherKey, action, navigationOptions);
   } else {
     router.navigate(action, navigationOptions);

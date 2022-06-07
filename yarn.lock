@@ -401,10 +401,10 @@
     eslint-plugin-react-hooks "^4.3.0"
     eslint-plugin-testing-library "^5.0.5"
 
-"@remix-run/router@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.1.0.tgz#9dee1610f5ba730e4c67e5de517912f71c627031"
-  integrity sha512-mK2wZWAFsijTGIk7ZhKvEAzU7qIS6F6RhPy5AiEosaEs3mB3J2NvUWRoN3W74V+5Jju/AisT5NaM2pIbnfGXWg==
+"@remix-run/router@0.2.0-pre.0":
+  version "0.2.0-pre.0"
+  resolved "https://registry.yarnpkg.com/@remix-run/router/-/router-0.2.0-pre.0.tgz#a2b2acf8a7382f98142b5c816bfba4f6e060e8cf"
+  integrity sha512-WDvE6Jvp8S+nuGb8pgrsYeCpX5HvZcgI6upbfNK2ZY1kyCYxWjGi574mfhb9rf4HDja5nqj4A80oJ3EkhjbKUQ==
 
 "@rushstack/eslint-patch@^1.1.0":
   version "1.1.1"

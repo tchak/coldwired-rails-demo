@@ -11,7 +11,7 @@ import invariant from 'tiny-invariant';
 
 import { registerEventListeners } from './event-listeners';
 import { renderPage } from './render';
-import { setupDataFunctions } from './fetcher';
+import { setupDataFunctions } from './loader';
 import { renderStream } from './turbo-stream';
 import { dispatch } from './dom';
 import { getFetcherForm } from './form';
@@ -20,17 +20,12 @@ export type RouteData =
   | { type: 'html'; content: string }
   | { type: 'turbo-stream'; content: string };
 
-export type GetFetcher = (fetcherKey: string) => Fetcher<RouteData>;
-
 type Context = { state?: RouterState; snapshot?: string };
 
 export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router {
   const context: Context = {};
 
-  // HACK!!!
-  const getFetcher: GetFetcher = (fetcherKey: string) =>
-    router.state.fetchers.get(fetcherKey) as Fetcher;
-  setupDataFunctions(routes, getFetcher);
+  setupDataFunctions(routes);
 
   const matches = matchRoutes(routes, location);
   const routeId = matches && matches[0].route.id;
