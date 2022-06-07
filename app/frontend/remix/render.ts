@@ -1,13 +1,13 @@
 import type { NavigationStates, Navigation } from '@remix-run/router';
 import morphdom from 'morphdom';
 
-import { dispatch, isCheckableInputElement, isTextInputElement } from './dom';
+import { dispatch, isCheckableInputElement, isHtmlElement, isTextInputElement } from './dom';
 
 export function renderPage(html: string, navigation: NavigationStates['Idle']) {
   try {
     const doc = parseHTML(html);
     beforeRender(navigation, doc.body);
-    document.head.title = doc.head.title;
+    renderHeadElement(document.head, doc.head);
     renderElement(document.body, doc.body);
     afterRender(navigation);
   } catch (error) {
@@ -25,6 +25,18 @@ export function renderElement(from: HTMLElement, to: HTMLElement, childrenOnly =
         } else if (isTextInputElement(fromEl) && isTextInputElement(toEl)) {
           toEl.value = fromEl.value;
         }
+      }
+      return true;
+    },
+  });
+}
+
+export function renderHeadElement(from: HTMLElement, to: HTMLElement) {
+  morphdom(from, to, {
+    childrenOnly: true,
+    onBeforeNodeDiscarded(node) {
+      if (isHtmlElement(node) && node.tagName == 'LINK') {
+        return false;
       }
       return true;
     },
