@@ -1,13 +1,13 @@
 import { Controller } from '@hotwired/stimulus';
+import invariant from 'tiny-invariant';
 
 import { isFormElement } from '../dom';
 import { registerForm, unregisterForm } from '../form';
 
 export class FetcherController extends Controller {
   connect() {
-    if (isFormElement(this.element)) {
-      registerForm(this.element);
-    }
+    invariant(isFormElement(this.element), '"fetcher" can only be registerd on form elements');
+    registerForm(this.element);
   }
 
   disconnect() {

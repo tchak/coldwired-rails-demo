@@ -54,7 +54,7 @@ const DEFAULT_DEBOUNCE = 500;
 function debounce(target: HTMLElement, callback: () => void) {
   let run = debounced.get(target);
   if (!run) {
-    const wait = parseIntOr(target.dataset.inputDebounce, DEFAULT_DEBOUNCE);
+    const wait = parseIntOr(target.dataset.debounceWait, DEFAULT_DEBOUNCE);
     if (wait == 0) {
       run = callback;
     } else {
