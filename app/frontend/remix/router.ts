@@ -19,6 +19,7 @@ import { dispatch } from './dom';
 import { getFetcherForm } from './form';
 import { FetcherController } from './controllers/fetcher';
 import { SubmitOnChangeController } from './controllers/submit-on-change';
+import { RevalidateController } from './controllers/revalidate';
 
 type Context = { state?: RouterState; snapshot?: string };
 
@@ -58,6 +59,7 @@ export function createRailsRouter({
   };
 
   if (application) {
+    application.register('revalidate', RevalidateController);
     application.register('submit-on-change', SubmitOnChangeController);
     application.register('fetcher', FetcherController);
   }

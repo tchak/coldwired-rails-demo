@@ -10,6 +10,7 @@ export function registerEventListeners(router: Router) {
     registerListener('remix:delete-fetcher', (event) =>
       onDeleteFetcher(router, event as CustomEvent)
     ),
+    registerListener('remix:revalidate', () => onRevalidate(router)),
   ];
 
   return () => unsubscribe.forEach((unsubscribe) => unsubscribe());
@@ -42,6 +43,10 @@ function onSubmit(router: Router, event: SubmitEvent) {
 
 function onDeleteFetcher(router: Router, event: CustomEvent<{ fetcherKey: string }>) {
   router.deleteFetcher(event.detail.fetcherKey);
+}
+
+function onRevalidate(router: Router) {
+  router.revalidate();
 }
 
 function willFollowLink(event: MouseEvent, link: HTMLAnchorElement) {
