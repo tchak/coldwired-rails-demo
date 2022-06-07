@@ -25,7 +25,7 @@ function onInput(event: Event) {
     willSubmitForm(form, input) &&
     isTextInput(input)
   ) {
-    debounce(form, () => form.requestSubmit(), 500);
+    debounce(form, () => form.requestSubmit());
   }
 }
 
@@ -49,9 +49,23 @@ function isTextInput(input: HTMLInputElement | HTMLTextAreaElement) {
   return true;
 }
 
-function debounce(target: HTMLElement, callback: () => void, wait: number) {
-  const run = debounced.get(target) ?? justDebounce(callback, wait);
-  debounced.set(target, run);
+const DEFAULT_DEBOUNCE = 500;
+
+function debounce(target: HTMLElement, callback: () => void) {
+  let run = debounced.get(target);
+  if (!run) {
+    const wait = parseIntOr(target.dataset.inputDebounce, DEFAULT_DEBOUNCE);
+    if (wait == 0) {
+      run = callback;
+    } else {
+      run = justDebounce(callback, wait);
+    }
+    debounced.set(target, run);
+  }
   run();
 }
 const debounced = new WeakMap<HTMLElement, () => void>();
+
+function parseIntOr(value: string | undefined, defaultValue: number) {
+  return value ? parseInt(value) : defaultValue;
+}

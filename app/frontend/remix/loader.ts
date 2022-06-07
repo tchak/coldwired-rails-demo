@@ -1,11 +1,34 @@
 import type {
+  RouterState,
   LoaderFunction as DataFunction,
   RouteObject,
   ShouldRevalidateFunction,
 } from '@remix-run/router';
 import { json, redirect } from '@remix-run/router';
 
-import type { RouteData } from './router';
+type RouteData = { format: 'html'; content: string } | { format: 'turbo-stream'; content: string };
+
+enum ContentType {
+  TurboStream = 'text/vnd.turbo-stream.html',
+  HTML = 'text/html, application/xhtml+xml',
+}
+
+export function getRouteData(state: RouterState): {
+  loaderData?: RouteData;
+  actionData?: RouteData;
+  errors?: RouteData;
+} {
+  const leafRoute = state.matches.at(-1)?.route;
+
+  if (leafRoute) {
+    const actionData = state.actionData && state.actionData[leafRoute.id];
+    const loaderData = state.loaderData[leafRoute.id];
+    const errors = state.errors && state.errors[leafRoute.id];
+
+    return { loaderData, actionData, errors };
+  }
+  return {};
+}
 
 export function setupDataFunctions(routes: RouteObject[]): void {
   for (const route of routes) {
@@ -22,7 +45,7 @@ export function setupDataFunctions(routes: RouteObject[]): void {
 
 const shouldRevalidate: ShouldRevalidateFunction = (args) => {
   // FIXME: actionResult type is wrong
-  if ((args.actionResult as any)?.type == 'turbo-stream') {
+  if ((args.actionResult as any as RouteData)?.format == 'turbo-stream') {
     return false;
   }
   return args.defaultShouldRevalidate;
@@ -34,6 +57,7 @@ const dataFunction: DataFunction = ({ request, signal }) =>
 
 function onFetchRequest(request: Request) {
   request.headers.set('x-remix', 'true');
+  request.headers.set('accept', [ContentType.TurboStream, ContentType.HTML].join(', '));
   return request;
 }
 
@@ -48,14 +72,14 @@ function onFetchResponse(response: Response) {
 }
 
 function isTurboStream(response: Response) {
-  return !!response.headers.get('content-type')?.match('text/vnd.turbo-stream.html');
+  return !!response.headers.get('content-type')?.startsWith(ContentType.TurboStream);
 }
 
 function processResponse(response: Response, content: string) {
   if (isTurboStream(response)) {
-    return json<RouteData>({ type: 'turbo-stream', content });
+    return json<RouteData>({ format: 'turbo-stream', content });
   } else if (response.status == 204) {
     return json(null);
   }
-  return json<RouteData>({ type: 'html', content });
+  return json<RouteData>({ format: 'html', content });
 }

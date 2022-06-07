@@ -5,32 +5,38 @@ import type {
   Navigation,
   Fetcher,
   RevalidationState,
+  RouteData,
 } from '@remix-run/router';
 import { createBrowserRouter, matchRoutes } from '@remix-run/router';
 import invariant from 'tiny-invariant';
+import type { Application } from '@hotwired/stimulus';
 
 import { registerEventListeners } from './event-listeners';
 import { renderPage } from './render';
-import { setupDataFunctions } from './loader';
+import { setupDataFunctions, getRouteData } from './loader';
 import { renderStream } from './turbo-stream';
 import { dispatch } from './dom';
 import { getFetcherForm } from './form';
-
-export type RouteData =
-  | { type: 'html'; content: string }
-  | { type: 'turbo-stream'; content: string };
+import { FetcherController } from './controllers/fetcher';
+import { SubmitOnChangeController } from './controllers/submit-on-change';
 
 type Context = { state?: RouterState; snapshot?: string };
 
-export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router {
+export function createRailsRouter({
+  routes,
+  application,
+}: {
+  routes: RouteObject[];
+  application?: Application;
+}): Router {
   const context: Context = {};
 
   setupDataFunctions(routes);
 
   const matches = matchRoutes(routes, location);
   const routeId = matches && matches[0].route.id;
-  const loaderData = routeId
-    ? { [routeId]: { type: 'html', content: document.body.outerHTML } }
+  const loaderData: RouteData = routeId
+    ? { [routeId]: { format: 'html', content: document.body.outerHTML } }
     : {};
 
   const router = createBrowserRouter({
@@ -51,6 +57,11 @@ export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router
     unsubscribe();
   };
 
+  if (application) {
+    application.register('submit-on-change', SubmitOnChangeController);
+    application.register('fetcher', FetcherController);
+  }
+
   return router;
 }
 
@@ -70,7 +81,7 @@ function onRouterStateChange(state: RouterState, context: Context) {
     }
 
     if (fetcher.state == 'idle') {
-      switch (fetcher.data?.type) {
+      switch (fetcher.data?.format) {
         case 'turbo-stream':
           renderStream(fetcher.data.content);
           break;
@@ -83,7 +94,7 @@ function onRouterStateChange(state: RouterState, context: Context) {
   if (state.initialized && state.navigation.state == 'idle') {
     const { loaderData, actionData } = getRouteData(state);
     const routeData = actionData ?? loaderData;
-    switch (routeData?.type) {
+    switch (routeData?.format) {
       case 'html':
         if (routeData.content != context.snapshot) {
           renderPage(routeData.content, state.navigation);
@@ -94,23 +105,6 @@ function onRouterStateChange(state: RouterState, context: Context) {
         invariant(false, 'Navigation can not return turbo-stream');
     }
   }
-}
-
-function getRouteData(state: RouterState): {
-  loaderData?: RouteData;
-  actionData?: RouteData;
-  errors?: RouteData;
-} {
-  const leafRoute = state.matches.at(-1)?.route;
-
-  if (leafRoute) {
-    const actionData = state.actionData && state.actionData[leafRoute.id];
-    const loaderData = state.loaderData[leafRoute.id];
-    const errors = state.errors && state.errors[leafRoute.id];
-
-    return { loaderData, actionData, errors };
-  }
-  return {};
 }
 
 function navigationStateChange(navigation: Navigation) {
