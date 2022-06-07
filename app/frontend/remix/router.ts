@@ -6,15 +6,15 @@ import type {
   Fetcher,
   RevalidationState,
 } from '@remix-run/router';
-import { createBrowserRouter, matchRoutes, invariant } from '@remix-run/router';
+import { createBrowserRouter, matchRoutes } from '@remix-run/router';
+import invariant from 'tiny-invariant';
 
 import { registerEventListeners } from './event-listeners';
-import { registerMutationObserver } from './mutation-observer';
 import { renderPage } from './render';
-import { getForm } from './form';
 import { setupDataFunctions } from './fetcher';
 import { renderStream } from './turbo-stream';
 import { dispatch } from './dom';
+import { getFetcherForm } from './form';
 
 export type RouteData =
   | { type: 'html'; content: string }
@@ -48,12 +48,12 @@ export function createRailsRouter({ routes }: { routes: RouteObject[] }): Router
     context.state = state;
   });
 
-  const unsubscribe = [registerEventListeners(router), registerMutationObserver(router)];
+  const unsubscribe = registerEventListeners(router);
 
   const dispose = router.dispose;
   router.dispose = () => {
     dispose.call(router);
-    unsubscribe.forEach((unsubscribe) => unsubscribe());
+    unsubscribe();
   };
 
   return router;
@@ -70,7 +70,8 @@ function onRouterStateChange(state: RouterState, context: Context) {
 
   for (const [fetcherKey, fetcher] of state.fetchers) {
     if (context.state?.fetchers.get(fetcherKey)?.state != fetcher.state) {
-      fetcherStateChange(fetcherKey, fetcher, getForm(fetcherKey));
+      const form = getFetcherForm(fetcherKey);
+      fetcherStateChange(fetcherKey, fetcher, form);
     }
 
     if (fetcher.state == 'idle') {

@@ -41,10 +41,10 @@
     ]
   },
   "dependencies": {
+    "@hotwired/stimulus": "^3.0.1",
     "@remix-run/router": "^0.1.0",
     "just-debounce-it": "^3.0.1",
     "morphdom": "^2.6.1",
-    "nanoevents": "^6.0.2",
     "nanoid": "^3.3.4",
     "tiny-invariant": "^1.2.0"
   },

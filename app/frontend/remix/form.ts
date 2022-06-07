@@ -1,10 +1,14 @@
 import type { Router, FormMethod } from '@remix-run/router';
-import { invariant } from '@remix-run/router';
+import invariant from 'tiny-invariant';
 import { nanoid } from 'nanoid';
 
-import { getFormSubmissionInfo, isHtmlElement, isFormElement } from './dom';
+import { getFormSubmissionInfo, dispatch } from './dom';
 
 type SubmitOptions = {
+  /** */
+  submitter?: HTMLInputElement;
+
+  /** */
   fetcherKey?: string;
 
   /**
@@ -18,8 +22,7 @@ type SubmitOptions = {
 export function submitForm(
   router: Router,
   form: HTMLFormElement,
-  submitter?: HTMLInputElement,
-  { fetcherKey, replace = false }: SubmitOptions = {}
+  { submitter, fetcherKey, replace = false }: SubmitOptions = {}
 ) {
   const { url, method, formData } = getFormSubmissionInfo(form, location.pathname, { submitter });
   const action = url.pathname;
@@ -36,49 +39,28 @@ export function submitForm(
   }
 }
 
-export function getForm(fetcherKey: string): HTMLFormElement {
+export function getFetcherKey(form: HTMLFormElement) {
+  return fetcherKeys.get(form);
+}
+
+export function getFetcherForm(fetcherKey: string) {
   const form = forms.get(fetcherKey);
   invariant(form, `No form found for fetcher key: ${fetcherKey}`);
   return form;
 }
 
-export function getFetcherKey(form: HTMLFormElement): string {
-  const fetcherKey = fetcherKeys.get(form);
-  invariant(fetcherKey, 'No fetcher key found for form');
-  return fetcherKey;
-}
-
-export function registerForms(node: Node, router: Router) {
-  if (isFormElement(node)) {
-    registerForm(node, router);
-  } else if (isHtmlElement(node)) {
-    node
-      .querySelectorAll<HTMLFormElement>('form[data-fetcher]')
-      .forEach((form) => registerForm(form, router));
-  }
-}
-
-export function unregisterForms(node: Node, router: Router) {
-  if (isFormElement(node)) {
-    unregisterForm(node, router);
-  } else if (isHtmlElement(node)) {
-    node.querySelectorAll('form').forEach((form) => unregisterForm(form, router));
-  }
-}
-
-function registerForm(form: HTMLFormElement, _: Router) {
-  const auto = form.dataset.fetcher == 'auto';
-  const fetcherKey = auto ? generateFetcherKey(form) : (form.dataset.fetcher as string);
-  forms.set(fetcherKey, form);
+export function registerForm(form: HTMLFormElement) {
+  const fetcherKey = generateFetcherKey(form);
   fetcherKeys.set(form, fetcherKey);
+  forms.set(fetcherKey, form);
 }
 
-function unregisterForm(form: HTMLFormElement, router: Router) {
+export function unregisterForm(form: HTMLFormElement) {
   const fetcherKey = fetcherKeys.get(form);
   if (fetcherKey) {
     forms.delete(fetcherKey);
     fetcherKeys.delete(form);
-    router.deleteFetcher(fetcherKey);
+    dispatch('remix:delete-fetcher', { detail: { fetcherKey } });
   }
 }
 

@@ -1,23 +1,23 @@
 import type { Router } from '@remix-run/router';
-import justDebounce from 'just-debounce-it';
 
 import { submitForm, getFetcherKey } from './form';
 import { shouldProcessLinkClick } from './dom';
 
 export function registerEventListeners(router: Router) {
   const unsubscribe = [
-    registerEventListener('click', (event) => onLinkClick(router, event as MouseEvent)),
-    registerEventListener('submit', (event) => onSubmit(router, event as SubmitEvent)),
-    registerEventListener('change', (event) => onChange(router, event)),
-    registerEventListener('input', (event) => onInput(router, event)),
+    registerListener('click', (event) => onLinkClick(router, event as MouseEvent)),
+    registerListener('submit', (event) => onSubmit(router, event as SubmitEvent)),
+    registerListener('remix:delete-fetcher', (event) =>
+      onDeleteFetcher(router, event as CustomEvent)
+    ),
   ];
 
   return () => unsubscribe.forEach((unsubscribe) => unsubscribe());
 }
 
-function registerEventListener(event: string, callback: (event: Event) => void) {
-  addEventListener(event, callback);
-  return () => removeEventListener(event, callback);
+function registerListener(event: string, callback: (event: Event) => void) {
+  document.documentElement.addEventListener(event, callback);
+  return () => document.documentElement.removeEventListener(event, callback);
 }
 
 function onLinkClick(router: Router, event: MouseEvent) {
@@ -36,46 +36,16 @@ function onSubmit(router: Router, event: SubmitEvent) {
   if (form.tagName == 'FORM' && willSubmitForm(form, submitter)) {
     event.preventDefault();
 
-    if (willFetch(form)) {
-      submitForm(router, form, submitter, { fetcherKey: getFetcherKey(form), replace: true });
-    } else {
-      submitForm(router, form, submitter, { replace: true });
-    }
+    submitForm(router, form, { submitter, fetcherKey: getFetcherKey(form), replace: true });
   }
 }
 
-function onInput(_: Router, event: Event) {
-  const input = event.target as HTMLInputElement;
-  const form = input.form;
-
-  if (input.matches('input, textarea') && form && willSubmitOnInput(form, input)) {
-    debounce(form, () => form.requestSubmit(), 500);
-  }
-}
-
-function onChange(_: Router, event: Event) {
-  const input = event.target as HTMLInputElement;
-  const form = input.form;
-
-  if (input.matches('input, select') && form && willSubmitOnChange(form, input)) {
-    form.requestSubmit();
-  }
+function onDeleteFetcher(router: Router, event: CustomEvent<{ fetcherKey: string }>) {
+  router.deleteFetcher(event.detail.fetcherKey);
 }
 
 function willFollowLink(event: MouseEvent, link: HTMLAnchorElement) {
   return isEnabled(link) && shouldProcessLinkClick(event, link.target);
-}
-
-function willSubmitOnInput(form: HTMLFormElement, input: HTMLInputElement) {
-  return willSubmitForm(form, input) && willSubmitOn(form, input, 'input');
-}
-
-function willSubmitOnChange(form: HTMLFormElement, input: HTMLInputElement) {
-  return willSubmitForm(form, input) && willSubmitOn(form, input, 'change');
-}
-
-function willFetch(form: HTMLFormElement) {
-  return !!form.dataset.fetcher;
 }
 
 function isEnabled(element: HTMLElement) {
@@ -86,38 +56,12 @@ function isEnabled(element: HTMLElement) {
   return element.dataset.remix != 'false';
 }
 
-function willSubmitForm(form: HTMLFormElement, submitter?: HTMLButtonElement | HTMLInputElement) {
+export function willSubmitForm(
+  form: HTMLFormElement,
+  submitter?: HTMLButtonElement | HTMLInputElement
+) {
   if (submitter) {
     return isEnabled(submitter) && isEnabled(form);
   }
   return isEnabled(form);
 }
-
-function willSubmitOn(
-  form: HTMLFormElement,
-  input: HTMLInputElement | HTMLTextAreaElement,
-  event: string
-): boolean {
-  if (event == 'input') {
-    switch (input.type) {
-      case 'checkbox':
-      case 'radio':
-      case 'range':
-        return false;
-    }
-  }
-  const submitOn = form.dataset.submitOn ?? '';
-  const events = submitOn
-    .toLowerCase()
-    .split(' ')
-    .map((eventName) => eventName.trim());
-
-  return events.includes(event);
-}
-
-function debounce(target: HTMLElement, callback: () => void, wait: number) {
-  const run = debounced.get(target) ?? justDebounce(callback, wait);
-  debounced.set(target, run);
-  run();
-}
-const debounced = new WeakMap<HTMLElement, () => void>();

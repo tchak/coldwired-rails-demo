@@ -1,5 +1,5 @@
 import type { FormEncType, FormMethod } from '@remix-run/router';
-import { invariant } from '@remix-run/router';
+import invariant from 'tiny-invariant';
 
 export const defaultMethod = 'get';
 const defaultEncType = 'application/x-www-form-urlencoded';
