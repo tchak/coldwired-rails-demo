@@ -1,7 +1,12 @@
 import type { NavigationStates, Navigation } from '@remix-run/router';
 import morphdom from 'morphdom';
 
-import { dispatch, isCheckableInputElement, isHtmlElement, isTextInputElement } from './dom';
+import {
+  dispatch,
+  isCheckboxOrRadioInputElement,
+  isHtmlElement,
+  isInputOrTextAreaElement,
+} from './dom';
 
 export function renderPage(html: string, navigation: NavigationStates['Idle']) {
   try {
@@ -20,9 +25,9 @@ export function renderElement(from: HTMLElement, to: HTMLElement, childrenOnly =
     childrenOnly,
     onBeforeElUpdated(fromEl, toEl) {
       if (document.activeElement == fromEl) {
-        if (isCheckableInputElement(fromEl) && isCheckableInputElement(toEl)) {
+        if (isCheckboxOrRadioInputElement(fromEl) && isCheckboxOrRadioInputElement(toEl)) {
           toEl.checked = fromEl.checked;
-        } else if (isTextInputElement(fromEl) && isTextInputElement(toEl)) {
+        } else if (isInputOrTextAreaElement(fromEl) && isInputOrTextAreaElement(toEl)) {
           toEl.value = fromEl.value;
         }
       }

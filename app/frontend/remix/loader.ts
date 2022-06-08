@@ -65,7 +65,8 @@ function onFetchResponse(response: Response) {
   if (response.ok) {
     const url = response.headers.get('x-remix-redirect');
     if (url) {
-      return redirect(url);
+      const pathname = new URL(url).pathname;
+      return redirect(pathname);
     }
   }
   return response.text().then((content) => processResponse(response, content));

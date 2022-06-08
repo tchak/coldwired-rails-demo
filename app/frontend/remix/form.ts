@@ -27,12 +27,12 @@ export function submitForm(
   const { url, method, formData } = getFormSubmissionInfo(form, location.pathname, { submitter });
   const action = url.pathname;
   const formMethod = parseFormMethod(method);
-  const navigationOptions = { formMethod, formData, replace };
+  const options = { formMethod, formData, replace };
 
   if (fetcherKey) {
-    router.fetch(fetcherKey, action, navigationOptions);
+    router.fetch(fetcherKey, action, options);
   } else {
-    router.navigate(action, navigationOptions);
+    router.navigate(action, options);
   }
 }
 
@@ -46,13 +46,13 @@ export function getFetcherForm(fetcherKey: string) {
   return form;
 }
 
-export function registerForm(form: HTMLFormElement) {
+export function registerFetcher(form: HTMLFormElement) {
   const fetcherKey = generateFetcherKey(form);
   fetcherKeys.set(form, fetcherKey);
   forms.set(fetcherKey, form);
 }
 
-export function unregisterForm(form: HTMLFormElement) {
+export function unregisterFetcher(form: HTMLFormElement) {
   const fetcherKey = fetcherKeys.get(form);
   if (fetcherKey) {
     forms.delete(fetcherKey);

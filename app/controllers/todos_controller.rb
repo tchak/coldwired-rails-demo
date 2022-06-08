@@ -11,7 +11,7 @@ class TodosController < ApplicationController
       flash.alert = todo.errors.full_messages
     end
 
-    redirect_to root_path
+    redirect_back(fallback_location: root_path)
   end
 
   def update
@@ -21,7 +21,10 @@ class TodosController < ApplicationController
       flash.alert = todo.errors.full_messages
     end
 
-    head :no_content
+    respond_to do |format|
+      format.turbo_stream { head :no_content }
+      format.html { redirect_back(fallback_location: root_path) }
+    end
   end
 
   def destroy
@@ -29,11 +32,8 @@ class TodosController < ApplicationController
     todo.destroy
 
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: turbo_stream.remove(helpers.dom_id(todo, :item))
-      end
-
-      #format.html { redirect_to root_path }
+      format.turbo_stream { render turbo_stream: turbo_stream.remove(helpers.dom_id(todo, :item)) }
+      format.html { redirect_back(fallback_location: root_path) }
     end
   end
 

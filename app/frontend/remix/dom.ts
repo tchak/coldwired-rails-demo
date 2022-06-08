@@ -16,16 +16,31 @@ export function isInputElement(object: any): object is HTMLInputElement {
   return isHtmlElement(object) && object.tagName.toLowerCase() == 'input';
 }
 
-export function isCheckableInputElement(object: any): object is HTMLInputElement {
+export function isTextAreaElement(object: any): object is HTMLInputElement {
+  return isHtmlElement(object) && object.tagName.toLowerCase() == 'textarea';
+}
+
+export function isSelectElement(object: any): object is HTMLInputElement {
+  return isHtmlElement(object) && object.tagName.toLowerCase() == 'select';
+}
+
+export function isCheckboxOrRadioInputElement(object: any): object is HTMLInputElement {
   return isInputElement(object) && ['checkbox', 'radio'].includes(object.type);
 }
 
-export function isTextInputElement(object: any): object is HTMLInputElement | HTMLTextAreaElement {
+export function isInputOrTextAreaElement(
+  object: any
+): object is HTMLInputElement | HTMLTextAreaElement {
   return (
-    isInputElement(object) &&
-    /^(?:input|textarea)$/i.test(object.tagName) &&
-    !['button', 'checkbox', 'radio'].includes(object.type)
+    isTextAreaElement(object) ||
+    (isInputElement(object) && !['button', 'checkbox', 'radio'].includes(object.type))
   );
+}
+
+export function isInputOrSelectElement(
+  object: any
+): object is HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement {
+  return isInputElement(object) || isTextAreaElement(object) || isSelectElement(object);
 }
 
 export function isFormElement(object: any): object is HTMLFormElement {

@@ -17,9 +17,10 @@ import { setupDataFunctions, getRouteData } from './loader';
 import { renderStream } from './turbo-stream';
 import { dispatch } from './dom';
 import { getFetcherForm } from './form';
+
 import { FetcherController } from './controllers/fetcher';
-import { SubmitOnChangeController } from './controllers/submit-on-change';
 import { RevalidateController } from './controllers/revalidate';
+import { SubmitOnChangeController } from './controllers/submit-on-change';
 
 type Context = { state?: RouterState; snapshot?: string };
 
@@ -59,9 +60,9 @@ export function createRailsRouter({
   };
 
   if (application) {
+    application.register('fetcher', FetcherController);
     application.register('revalidate', RevalidateController);
     application.register('submit-on-change', SubmitOnChangeController);
-    application.register('fetcher', FetcherController);
   }
 
   return router;

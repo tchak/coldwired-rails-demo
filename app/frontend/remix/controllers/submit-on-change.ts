@@ -2,6 +2,7 @@ import { Controller } from '@hotwired/stimulus';
 import justDebounce from 'just-debounce-it';
 
 import { willSubmitForm } from '../event-listeners';
+import { isInputOrTextAreaElement, isInputOrSelectElement } from '../dom';
 
 export class SubmitOnChangeController extends Controller {
   connect() {
@@ -16,37 +17,21 @@ export class SubmitOnChangeController extends Controller {
 }
 
 function onInput(event: Event) {
-  const input = event.target as HTMLInputElement;
+  const input = event.target as { form?: HTMLFormElement };
   const form = input.form;
 
-  if (
-    form &&
-    input.matches('input, textarea') &&
-    willSubmitForm(form, input) &&
-    isTextInput(input)
-  ) {
+  if (form && isInputOrTextAreaElement(input) && willSubmitForm(form, input)) {
     debounce(form, () => form.requestSubmit());
   }
 }
 
 function onChange(event: Event) {
-  const input = event.target as HTMLInputElement;
+  const input = event.target as { form?: HTMLFormElement };
   const form = input.form;
 
-  if (form && input.matches('input, select') && willSubmitForm(form, input)) {
+  if (form && isInputOrSelectElement(input) && willSubmitForm(form, input)) {
     form.requestSubmit();
   }
-}
-
-function isTextInput(input: HTMLInputElement | HTMLTextAreaElement) {
-  switch (input.type) {
-    case 'checkbox':
-    case 'radio':
-    case 'range':
-      return false;
-  }
-
-  return true;
 }
 
 const DEFAULT_DEBOUNCE = 500;

@@ -50,10 +50,10 @@ function onRevalidate(router: Router) {
 }
 
 function willFollowLink(event: MouseEvent, link: HTMLAnchorElement) {
-  return isEnabled(link) && shouldProcessLinkClick(event, link.target);
+  return isRemixEnabled(link) && shouldProcessLinkClick(event, link.target);
 }
 
-function isEnabled(element: HTMLElement) {
+function isRemixEnabled(element: HTMLElement) {
   const container = element.closest<HTMLElement>(`[data-remix]`);
   if (container) {
     return container.dataset.remix != 'false';
@@ -63,10 +63,10 @@ function isEnabled(element: HTMLElement) {
 
 export function willSubmitForm(
   form: HTMLFormElement,
-  submitter?: HTMLButtonElement | HTMLInputElement
+  input?: HTMLButtonElement | HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
 ) {
-  if (submitter) {
-    return isEnabled(submitter) && isEnabled(form);
+  if (input) {
+    return isRemixEnabled(input) && isRemixEnabled(form);
   }
-  return isEnabled(form);
+  return isRemixEnabled(form);
 }
