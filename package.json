@@ -42,10 +42,10 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.0.1",
-    "@remix-run/router": "0.2.0-pre.1",
+    "@remix-run/router": "0.2.0-pre.2",
     "just-debounce-it": "^3.0.1",
     "morphdom": "^2.6.1",
-    "nanoid": "^3.3.4",
+    "nanoid": "^4.0.0",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
@@ -59,9 +59,9 @@
     "npm-run-all": "^4.1.5",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",
-    "tailwindcss": "^3.0.24",
+    "tailwindcss": "^3.1.2",
     "typescript": "^4.7.3",
-    "vite": "^2.9.1",
+    "vite": "^2.9.12",
     "vite-plugin-ruby": "^3.0.9"
   },
   "engines": {

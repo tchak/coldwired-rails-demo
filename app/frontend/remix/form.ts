@@ -28,9 +28,12 @@ export function submitForm(
   const action = url.pathname;
   const formMethod = parseFormMethod(method);
   const options = { formMethod, formData, replace };
+  const match = router.state.matches.at(-1);
+
+  invariant(match, 'No route matches the current URL');
 
   if (fetcherKey) {
-    router.fetch(fetcherKey, action, options);
+    router.fetch(fetcherKey, match.route.id, action, options);
   } else {
     router.navigate(action, options);
   }
