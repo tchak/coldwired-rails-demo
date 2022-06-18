@@ -2,48 +2,29 @@
 
 <ul class="w-1/2">
   <% @todos.each do |todo| %>
-    <li data-controller="toggle" class="flex items-center justify-between mb-2 border border-1 rounded border-gray-200 p-2" id="<%= dom_id(todo, :item) %>">
-      <div>
-        <%= form_for todo, data: { controller: 'fetcher submit-on-change' }, html: { class: 'inline' } do |form| %>
+    <li data-controller="toggle" class="<%= item_classes('p-2') %>" id="<%= dom_id(todo, :item) %>">
+      <div class="w-full">
+        <%= form_for todo, data: { controller: 'fetcher submit-on-change' }, html: { class: 'w-full' } do |form| %>
           <label data-toggle-target="toggle">
-            <%= form.check_box :completed, class: "mr-2 focus:ring-blue-500 h-4 w-4 text-blue-600 border-gray-300 rounded" %>
+            <%= form.check_box :completed, class: checkbox_classes("mr-2") %>
             <span><%= todo.title %></span>
           </label>
           <div class="hidden" data-toggle-target="toggle">
-            <%= form.text_field :title, class: 'shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md', autofocus: true, data: { action: "blur->toggle#toggle keydown->toggle#close" } %>
+            <%= form.text_field :title, class: input_classes('w-full'), autofocus: true, data: { action: "blur->toggle#toggle keydown->toggle#close" } %>
           </div>
         <% end %>
       </div>
       <div class="flex items-center">
-        <% if todo.validating? %>
-          <div data-controller="revalidate" id="<%= dom_id(todo, :status) %>">
-            <% if todo.validated? %>
-              <span class="text-green-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-                </svg>
-              </span>
-            <% else %>
-              <span class="text-orange-700">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.35-.166-2.001A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd" />
-                </svg>
-              </span>
-            <% end %>
-          </div>
-        <% end %>
-        <button type="button" data-action="toggle#toggle" data-toggle-target="toggle" class="inline-flex items-center border shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75 border-transparent text-white bg-blue-600 text-xs rounded px-2.5 py-1.5 ml-2">
-          Edit
-        </button>
-        <%= form_for todo, method: :delete, data: { controller: 'fetcher' }, html: { id: dom_id(todo, :delete), class: 'inline ml-2' } do |form| %>
-          <%= form.submit "Delete", class: 'inline-flex items-center border shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-75 border-transparent text-white bg-red-600 text-xs rounded px-2.5 py-1.5' %>
-        <% end %>
+        <%= render partial: 'status', locals: { todo: todo } %>
+
+        <%= button_tag "Edit", type: 'button', class: button_classes, data: { action: "toggle#toggle", toggle_target: "toggle" } %>
+        <%= button_to "Delete", todo, method: :delete, form: { data: { controller: 'fetcher' }, id: dom_id(todo, :delete) }, class: button_classes('focus:ring-red-500 text-white bg-red-600 ml-2') %>
       </div>
     </li>
   <% end %>
 </ul>
 
 <%= form_for @todo, html: { class: 'mt-4 w-1/2 flex items-center' } do |form| %>
-  <%= form.text_field :title, class: 'shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md flex-grow mr-2', autofocus: true %>
-  <%= form.submit "Add", class: 'inline-flex items-center border shadow-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-75 border-transparent text-white bg-blue-600 text-xs rounded px-2.5 py-1.5' %>
+  <%= form.text_field :title, class: input_classes('flex-grow mr-2'), autofocus: true %>
+  <%= form.button "Add", class: button_classes %>
 <% end %>
