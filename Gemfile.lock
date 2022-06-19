@@ -181,7 +181,7 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
-    vite_rails (3.0.9)
+    vite_rails (3.0.10)
       railties (>= 5.1, < 8)
       vite_ruby (~> 3.0)
     vite_ruby (3.1.6)
@@ -226,4 +226,4 @@ RUBY VERSION
    ruby 3.1.2p20
 
 BUNDLED WITH
-   2.2.32
+   2.3.11
