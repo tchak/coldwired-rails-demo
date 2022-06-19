@@ -7,7 +7,7 @@ namespace :remix do
 
     Rails.root
       .join('app/frontend/routes.json')
-      .write(routes.to_json)
+      .write(JSON.pretty_generate(routes))
   end
 end
 
@@ -19,14 +19,6 @@ class RemixRoutesInspector
 
     def path
       @path ||= super.gsub(/\(\.:format\)/, '')
-    end
-
-    def loader?
-      verb == 'GET' || verb == 'HEAD'
-    end
-
-    def action?
-      !loader?
     end
   end
 
@@ -46,12 +38,9 @@ class RemixRoutesInspector
       RouteWrapper.new(route)
     end.reject(&:internal?).group_by(&:path).map do |path, routes|
       {
-        id: routes.map(&:name).filter(&:present?).first,
+        id: routes.map(&:name).filter(&:present?).first || SecureRandom.uuid,
         path: path,
-        handle: {
-          _loader: routes.any?(&:loader?),
-          _action: routes.any?(&:action?)
-        }
+        handle: { method: routes.map(&:verb).map(&:downcase) }
       }
     end
   end

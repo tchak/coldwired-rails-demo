@@ -1,1 +1,40 @@
-[{"id":"root","path":"/","handle":{"_loader":true,"_action":false}},{"id":"about","path":"/about","handle":{"_loader":true,"_action":false}},{"id":"todos","path":"/todos","handle":{"_loader":false,"_action":true}},{"id":"todo","path":"/todos/:id","handle":{"_loader":false,"_action":true}}]
+[
+  {
+    "id": "root",
+    "path": "/",
+    "handle": {
+      "method": [
+        "get"
+      ]
+    }
+  },
+  {
+    "id": "about",
+    "path": "/about",
+    "handle": {
+      "method": [
+        "get"
+      ]
+    }
+  },
+  {
+    "id": "todos",
+    "path": "/todos",
+    "handle": {
+      "method": [
+        "post"
+      ]
+    }
+  },
+  {
+    "id": "todo",
+    "path": "/todos/:id",
+    "handle": {
+      "method": [
+        "patch",
+        "put",
+        "delete"
+      ]
+    }
+  }
+]
