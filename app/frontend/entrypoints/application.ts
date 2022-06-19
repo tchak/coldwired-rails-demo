@@ -6,7 +6,7 @@ import routes from '../routes.json';
 
 const application = new Application();
 
-class ToggleController extends Controller {
+class TodoController extends Controller {
   static targets = ['toggle'];
   declare readonly toggleTargets: HTMLInputElement[];
 
@@ -36,10 +36,10 @@ class ToggleController extends Controller {
   }
 
   private focusButton() {
-    this.element.querySelector<HTMLButtonElement>('button[data-toggle-target="toggle"]')?.focus();
+    this.element.querySelector<HTMLButtonElement>('button[data-todo-target="toggle"]')?.focus();
   }
 }
 
-application.register('toggle', ToggleController);
+application.register('todo', TodoController);
 
 createBrowserTurboRouter({ routes, application, debug: true });

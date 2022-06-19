@@ -7,7 +7,9 @@ class TodosController < ApplicationController
   def create
     todo = Todo.new(create_params)
 
-    if !todo.save
+    if todo.save
+      flash[:created?] = true
+    else
       flash.alert = todo.errors.full_messages
     end
 
