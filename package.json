@@ -43,7 +43,7 @@
   },
   "dependencies": {
     "@hotwired/stimulus": "^3.0.1",
-    "remix-router-turbo": "^0.4.1"
+    "remix-router-turbo": "^0.4.2"
   },
   "devDependencies": {
     "@remix-run/eslint-config": "^1.6.0",

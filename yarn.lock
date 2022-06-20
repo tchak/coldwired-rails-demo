@@ -2654,10 +2654,10 @@ regexpp@^3.0.0, regexpp@^3.2.0:
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.2.0.tgz#0425a2768d8f23bad70ca4b90461fa2f1213e1b2"
   integrity sha512-pq2bWo9mVD43nbts2wGv17XLiNLya+GklZ8kaDLV2Z08gDCsGpnKn9BFMepvWuHCbyVvY7J5o5+BVvoQbmlJLg==
 
-remix-router-turbo@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/remix-router-turbo/-/remix-router-turbo-0.4.1.tgz#7f8809e1f96b7ed075151dac58e5bb128ea5fc1f"
-  integrity sha512-y44TfGq0oAVd8PiIfmiUOWFo91Q/6oHNA32tT9mEdnQ58acXsdQ/7FWiS0WCnALALMzXFAbsAYcv6Ba62gY4Sg==
+remix-router-turbo@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/remix-router-turbo/-/remix-router-turbo-0.4.2.tgz#5fb9b2138fffa3674abcccf405046c257fb9ac11"
+  integrity sha512-zlhlhK65ED5vplpj2EeK9g1xHyyUwrM11OcnYnXliMK0oA6kM779VlBfS58quZ/HQ1CObjKpdYkftMd/oog4Ag==
   dependencies:
     "@hotwired/stimulus" "^3.0.1"
     "@remix-run/router" "0.2.0-pre.2"
