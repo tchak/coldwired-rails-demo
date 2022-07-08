@@ -4,13 +4,13 @@
   <% @todos.each do |todo| %>
     <li data-controller="todo" class="<%= item_classes('p-2') %>" id="<%= dom_id(todo, :item) %>">
       <div class="w-full">
-        <%= form_for todo, data: { controller: 'fetcher submit-on-change' }, html: { class: 'w-full' } do |form| %>
+        <%= form_for todo, data: { turbo_fetcher: true, turbo_submit_on_change: true, action: 'turbo:fetcher-state-change->todo#update' }, html: { class: 'w-full' } do |form| %>
           <label data-todo-target="toggle">
-            <%= form.check_box :completed, class: checkbox_classes("mr-2") %>
-            <span><%= todo.title %></span>
+            <%= form.check_box :completed, class: checkbox_classes("mr-2"), id: dom_id(todo, :completed) %>
+            <span class="label"><%= todo.title %></span>
           </label>
           <div class="hidden" data-todo-target="toggle">
-            <%= form.text_field :title, class: input_classes('w-full'), autofocus: true, data: { action: "blur->todo#toggle keydown->todo#close" } %>
+            <%= form.text_field :title, class: input_classes('w-full'), id: dom_id(todo, :title), autofocus: true, data: { action: "blur->todo#toggle keydown->todo#close" } %>
           </div>
         <% end %>
       </div>
@@ -18,13 +18,13 @@
         <%= render partial: 'status', locals: { todo: todo } %>
 
         <%= button_tag "Edit", type: 'button', class: button_classes, data: { action: "todo#toggle", todo_target: "toggle" } %>
-        <%= button_to "Delete", todo, method: :delete, form: { data: { controller: 'fetcher' }, id: dom_id(todo, :delete) }, class: button_classes('focus:ring-red-500 text-white bg-red-600 ml-2') %>
+        <%= button_to "Delete", todo, method: :delete, form: { data: { turbo_fetcher: true }, id: dom_id(todo, :delete) }, class: button_classes('focus:ring-red-500 text-white bg-red-600 ml-2') %>
       </div>
     </li>
   <% end %>
 </ul>
 
 <%= form_for @todo, html: { class: 'mt-4 w-1/2 flex items-center' } do |form| %>
-  <%= form.text_field :title, class: input_classes('flex-grow mr-2'), autofocus: true, data: { turbo_render_priority: flash[:created?] ? :server : :client } %>
+  <%= form.text_field :title, class: input_classes('flex-grow mr-2'), aria: { label: 'Add todo' }, autofocus: true, data: { turbo_disable: true, turbo_permanent: flash[:created?] ? :server : :client } %>
   <%= form.button "Add", class: button_classes %>
 <% end %>

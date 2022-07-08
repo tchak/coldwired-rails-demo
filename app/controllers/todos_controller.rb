@@ -20,11 +20,11 @@ class TodosController < ApplicationController
     todo = Todo.find(params[:id])
 
     if !todo.update(update_params)
-      flash.alert = todo.errors.full_messages
+      flash.now.alert = todo.errors.full_messages
     end
 
     respond_to do |format|
-      format.turbo_stream { head :no_content }
+      format.turbo_stream
       format.html { redirect_back(fallback_location: root_path) }
     end
   end

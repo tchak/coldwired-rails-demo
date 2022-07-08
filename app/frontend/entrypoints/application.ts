@@ -1,10 +1,12 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { createBrowserTurboRouter, classList } from 'remix-router-turbo';
-import { Application, Controller } from '@hotwired/stimulus';
+import type { Fetcher } from 'remix-router-turbo';
+import { createBrowserTurboRouter, Application } from 'remix-router-turbo';
+import { Application as Stimulus, Controller } from '@hotwired/stimulus';
 
 import routes from '../routes.json';
 
-const application = new Application();
+const router = createBrowserTurboRouter({ routes });
+const application = new Application({ router });
+const stimulus = new Stimulus();
 
 class TodoController extends Controller {
   static targets = ['toggle'];
@@ -21,10 +23,22 @@ class TodoController extends Controller {
 
   toggle() {
     for (const element of this.toggleTargets) {
-      classList(element).toggle('hidden');
+      element.setAttribute('data-turbo-permanent', 'client');
+      element.classList.toggle('hidden');
       const input = element.querySelector<HTMLInputElement>('input[autofocus]');
       if (input && !element.classList.contains('hidden')) {
         this.focusInput(input);
+      }
+    }
+  }
+
+  update(event: CustomEvent<{ fetcher: Fetcher }>) {
+    const fetcher = event.detail.fetcher;
+    if (fetcher.state == 'submitting') {
+      const title = fetcher.formData.get('todo[title]');
+      const label = (event.target as Element).querySelector('.label');
+      if (label) {
+        label.textContent = String(title);
       }
     }
   }
@@ -40,6 +54,7 @@ class TodoController extends Controller {
   }
 }
 
-application.register('todo', TodoController);
+stimulus.register('todo', TodoController);
 
-createBrowserTurboRouter({ routes, application, debug: true });
+application.start();
+stimulus.start();

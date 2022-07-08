@@ -1,0 +1,5 @@
+<% if flash.any? %>
+  <%= turbo_stream.replace "flash-messages", partial: 'layouts/flash' %>
+<% else %>
+  <%= turbo_stream.update "flash-messages", "" %>
+<% end %>

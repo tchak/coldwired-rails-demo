@@ -1,6 +1,6 @@
 module ApplicationHelper
   def input_classes(classes = '')
-    "shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md px-1.5 py-1 #{classes}"
+    "disabled:opacity-75 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border-gray-300 rounded-md px-1.5 py-1 #{classes}"
   end
 
   def checkbox_classes(classes = '')

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>Rails Remix Todo</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -10,11 +10,11 @@
     <%= vite_stylesheet_tag 'application' %>
   </head>
 
-  <body data-controller="turbo">
-    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+  <body>
+    <main class="max-w-7xl mx-auto sm:px-6 lg:px-8">
       <%= render partial: 'layouts/flash' %>
       <%= render partial: 'layouts/nav' %>
       <%= yield %>
-    </div>
+    </main>
   </body>
 </html>
