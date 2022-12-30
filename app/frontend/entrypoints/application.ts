@@ -23,7 +23,6 @@ class TodoController extends Controller {
 
   toggle() {
     for (const element of this.toggleTargets) {
-      element.setAttribute('data-turbo-permanent', 'client');
       element.classList.toggle('hidden');
       const input = element.querySelector<HTMLInputElement>('input[autofocus]');
       if (input && !element.classList.contains('hidden')) {
@@ -40,6 +39,13 @@ class TodoController extends Controller {
       if (label) {
         label.textContent = String(title);
       }
+    }
+  }
+
+  remove(event: CustomEvent<{ fetcher: Fetcher }>) {
+    const fetcher = event.detail.fetcher;
+    if (fetcher.state == 'submitting') {
+      this.element.classList.add('hidden');
     }
   }
 
