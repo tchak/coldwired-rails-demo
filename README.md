@@ -2,9 +2,9 @@
 
 ## What is this?
 
-This is an example [rails](https://github.com/rails/rails) application using [remix-router-turbo](https://github.com/tchak/remix-router-turbo). It works in a similar way with [turbo](https://turbo.hotwired.dev/handbook/drive), but all fonctionality is implemented as several [stimulus](https://stimulus.hotwired.dev) controllers. See details in [remix-router-turbo repository](https://github.com/tchak/remix-router-turbo#usage).
+This is an example [rails](https://github.com/rails/rails) application using [coldwired](https://github.com/tchak/coldwired). It works in a similar way with [turbo](https://turbo.hotwired.dev/handbook/drive), but is based on [remix](https://www.npmjs.com/package/@remix-run/router) and [morphdom](https://github.com/patrick-steele-idem/morphdom). See details in [coldwired repository](https://github.com/tchak/coldwired#usage).
 
-There is also a couple of `rails` specific things. A `rake` task `remix:routes` which generate a `JSON` with all the server routes and a patch of `redirect_to` method to provide remix specific redirects.
+There is also a couple of `rails` specific things. A `rake` task `coldwired:routes` which generate a `JSON` with all the server routes and a concern with patch of `redirect_to` method to provide coldwired specific redirects.
 
 ## Run
 

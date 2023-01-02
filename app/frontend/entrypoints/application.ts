@@ -1,11 +1,9 @@
-import type { Fetcher } from 'remix-router-turbo';
-import { createBrowserTurboRouter, Application } from 'remix-router-turbo';
+import { type Fetcher, Application } from '@coldwired/router';
 import { Application as Stimulus, Controller } from '@hotwired/stimulus';
 
 import routes from '../routes.json';
 
-const router = createBrowserTurboRouter({ routes });
-const application = new Application({ router });
+const application = new Application({ routes });
 const stimulus = new Stimulus();
 
 class TodoController extends Controller {

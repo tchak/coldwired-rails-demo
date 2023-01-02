@@ -1,3 +1,3 @@
 class ApplicationController < ActionController::Base
-  include RemixRedirectConcern
+  include ColdwiredRedirectConcern
 end

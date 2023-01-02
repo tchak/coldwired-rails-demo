@@ -1,9 +1,9 @@
 require 'action_dispatch/routing/inspector'
 
-namespace :remix do
-  desc "generate remix routes"
+namespace :coldwired do
+  desc "generate coldwired routes"
   task routes: :environment do
-    routes = RemixRoutesInspector.new(Rails.application.routes.routes).as_json
+    routes = ColdwiredRoutesInspector.new(Rails.application.routes.routes).as_json
 
     Rails.root
       .join('app/frontend/routes.json')
@@ -11,7 +11,7 @@ namespace :remix do
   end
 end
 
-class RemixRoutesInspector
+class ColdwiredRoutesInspector
   class RouteWrapper < ActionDispatch::Routing::RouteWrapper
     def internal?
       super || path.start_with?('/rails') || name.start_with?('turbo_')

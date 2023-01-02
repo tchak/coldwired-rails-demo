@@ -1,21 +1,21 @@
-module RemixRedirectConcern
+module ColdwiredRedirectConcern
   extend ActiveSupport::Concern
 
   def redirect_to(options = {}, response_options = {})
-    if remix?
-      remix_redirect_to(options, response_options)
+    if coldwired?
+      coldwired_redirect_to(options, response_options)
     else
       super
     end
   end
 
-  def remix?
+  def coldwired?
     request.headers['x-requested-with'] == 'remix'
   end
 
   private
 
-  def remix_redirect_to(options = {}, response_options = {})
+  def coldwired_redirect_to(options = {}, response_options = {})
     raise ActionControllerError.new("Cannot redirect to nil!") unless options
     raise AbstractController::DoubleRenderError if response_body
   
