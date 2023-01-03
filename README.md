@@ -1,4 +1,4 @@
-# Rails Remix Demo
+# Coldwired Rails Demo
 
 ## What is this?
 

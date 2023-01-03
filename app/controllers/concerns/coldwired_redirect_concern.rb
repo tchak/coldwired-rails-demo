@@ -10,7 +10,7 @@ module ColdwiredRedirectConcern
   end
 
   def coldwired?
-    request.headers['x-requested-with'] == 'remix'
+    request.headers['x-requested-with'] == 'coldwire'
   end
 
   private
@@ -21,7 +21,7 @@ module ColdwiredRedirectConcern
   
     allow_other_host = response_options.delete(:allow_other_host) { _allow_other_host }
   
-    headers['x-remix-redirect'] = _enforce_open_redirect_protection(_compute_redirect_to_location(request, options), allow_other_host: allow_other_host)
+    headers['x-coldwire-redirect'] = _enforce_open_redirect_protection(_compute_redirect_to_location(request, options), allow_other_host: allow_other_host)
     head :no_content
   end
 end
